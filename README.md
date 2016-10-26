@@ -28,11 +28,11 @@ This plan gets converted to the following by AltAzPlan:
 ; Needs 3 commands in a row WaitUntil, ;=AltAz x xx xx   yy yy yy
 ;Target line gives targetName. The subsequent RA/Dec will be filled in
 ; 
-\#WaitUntil 0,3:30 AM      ; local datetime is 08:30 PM
+#WaitUntil 0,3:30 AM      ; local datetime is 08:30 PM
 ;=AltAz    24 0 0     77 0 0
 Targ830	03° 29' 08"	23° 10' 54"
 ;
-\#WaitUntil 0,6:30 AM      ; local datetime is 11:30 PM
+#WaitUntil 0,6:30 AM      ; local datetime is 11:30 PM
 ;=AltAz     51 0 0   190 0 0
 MyTarg1130	01° 02' 16"	-05° 35' 41"
 ```
