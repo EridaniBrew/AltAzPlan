@@ -1,0 +1,21 @@
+﻿;Plan to test Alt/Az generation
+; Needs 3 commands in a row WaitUntil, ;=AltAz x xx xx   yy yy yy
+;Target line gives targetName. The subsequent RA/Dec will be filled in
+; 
+#WaitUntil 0,3:30 AM      ; local datetime is 08:30 PM
+;=AltAz    24 0 0     77 0 0
+Targ830           ; my comment here
+;
+#WaitUntil 0,6:30 AM      ; local datetime is 11:30 PM
+;=AltAz     51 0 0   190 0 0
+; should be 1 1 24   -5 41 7
+MyTarg1130
+;
+#WaitUntil 0,7:30 AM      ; local datetime is 12:30 AM
+;=AltAz     89 0 0   240 0 0
+; should be 2 23   32 30
+MyTarg1230
+#WaitUntil 0,12:30 PM      ; local datetime is 5:30 AM
+;=AltAz     45 0 0   10 0 0
+; should be 9 25   75 45
+MyTarg530

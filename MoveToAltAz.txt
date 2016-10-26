@@ -1,0 +1,68 @@
+'tabs=4
+'------------------------------------------------------------------------------
+'
+' Script:       Move2AltAz.vbs
+' Author:       Richard A. Berg   <richard.berg@verizon.net>
+' Version:      1.0
+' Requires:     ACP 5.1 or later!
+'               Windows Script 5.7 or later
+'
+' Environment:  This script is written to run under the ACP scripting
+'               console and the web environment as a local or remote user.
+'
+' Description:  This utility slews the telescope to your selected alt-az. 
+'		            It completes by turning off tracking.
+'
+'               The destination is hard-coded in statements 32&33 below.
+'               Edit and change the values to set your preferred destination.
+'               ACP must be already synced and running.
+'
+' Revision History:
+'
+' Date      Who     Description
+' --------- ----    --------------------------------------------------
+' 19-Oct-16 rab     1.0.0 - Initial edit
+'---------------------------------------------------------------------
+'
+Option Explicit   ' Enforce variable declarations
+Dim SUP           ' Global for annunciators
+
+Sub Main()
+    Dim starRA, starDec, CT, Telescope, alt, az
+    alt = 25.0    ' degrees above the horizon'                  SET THESE
+    az = 195.0    ' "0" at North, increasing toward the East"   SET THESE
+    
+	Set SUP = CreateObject("ACP.AcquireSupport")	' Enables slewing
+    Set Telescope = Util.ScriptTelescope			' Need this for parking/tracking
+    Set CT = Util.NewCTHereAndNow()					' Enables the coordinate transformation
+	
+    Call SUP.Initialize()
+
+    Console.PrintLine "  Slewing to position at Az " & Util.FormatVar(az,0) _
+                      & ", Alt " & Util.FormatVar(alt,0)
+    Voice.Speak " Slewing to alt az position. " 
+'
+	Call CT.InitHereAndNow()    ' Update transform
+	'
+    CT.Azimuth = az
+    CT.Elevation = alt
+		
+	starRA = CT.RightAscension
+	starDec = CT.Declination
+    On Error Resume Next
+    Call SUP.StartSlewJ2000("Slew to Alt Az", starRA, starDec)
+    Call SUP.WaitForSlew()
+    Console.PrintLine "Telescope is parked"
+'
+' If we can control tracking, make sure it's off at script end.
+'
+    If Telescope.CanSetTracking Then
+        If Telescope.Tracking Then 
+            Telescope.Tracking = False
+            Util.WaitForMilliseconds 1000
+        End If
+        Console.PrintLine "(turning off tracking for safety)"
+	End If
+	
+	SUP.Terminate
+End Sub
